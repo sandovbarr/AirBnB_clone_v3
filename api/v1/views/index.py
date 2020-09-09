@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from api.v1.views import app_views
-import json
+from flask import jsonify
 from models import storage
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
@@ -13,7 +13,7 @@ from models.user import User
 @app_views.route('/status')
 def views_json():
     """ Return Json """
-    return json.dumps({"status": "OK"})
+    return jsonify({"status": "OK"})
 
 @app_views.route('/stats')
 def count_each_obj():
@@ -32,4 +32,4 @@ def count_each_obj():
                 }
     for cls_k, cls_v in classes.items():
         objs_size[cls_k] = storage.count(cls_v)
-    return json.dumps(objs_size, indent=4)
+    return jsonify(objs_size)
