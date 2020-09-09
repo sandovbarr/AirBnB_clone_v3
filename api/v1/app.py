@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ Flask App runner """
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, jsonify
 from models import storage
 # from api.v1.views import app_views
 from os import getenv
@@ -17,6 +17,12 @@ HOST = getenv('HBNB_API_HOST') if getenv('HBNB_API_HOST') else "0.0.0.0"
 def teardown_app(error):
     """ Handle Error """
     storage.close()
+
+
+@app.errorhandler(404)
+def error_404_not_found(self):
+    ''' handle 404 erro '''
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == '__main__':

@@ -26,13 +26,13 @@ def count_each_obj():
     '''
     objs_size = {}
     classes = {
-                "amenities": Amenity,
-                "cities": City,
-                "places": Place,
-                "reviews": Review,
-                "states": State,
-                "users": User
-                }
+        "amenities": Amenity,
+        "cities": City,
+        "places": Place,
+        "reviews": Review,
+        "states": State,
+        "users": User
+    }
     for cls_k, cls_v in classes.items():
         objs_size[cls_k] = storage.count(cls_v)
     return jsonify(objs_size)
