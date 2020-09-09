@@ -17,13 +17,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 
-
 class DBStorage:
     """interaacts with the MySQL database"""
     __engine = None
     __session = None
     classes = {"Amenity": Amenity, "City": City,
-            "Place": Place, "Review": Review, "State": State, "User": User}
+               "Place": Place, "Review": Review, "State": State, "User": User}
 
     def __init__(self):
         """Instantiate a DBStorage object"""
