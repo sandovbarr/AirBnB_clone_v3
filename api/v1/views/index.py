@@ -11,17 +11,19 @@ from models.review import Review
 from models.state import State
 from models.user import User
 
+
 @app_views.route('/status')
 def views_json():
     """ Return Json """
     return jsonify({"status": "OK"})
+
 
 @app_views.route('/stats')
 def count_each_obj():
     '''
         Endpoint that retrieves the number
         of each objects by type:
-    '''    
+    '''
     objs_size = {}
     classes = {
                 "amenities": Amenity,
