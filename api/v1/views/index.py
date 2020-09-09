@@ -13,7 +13,7 @@ from models.user import User
 @app_views.route('/status')
 def views_json():
     """ Return Json """
-    return json.dumps({"status": "OK"})
+    return json.dumps({"status": "OK"}, indent=4)
 
 @app_views.route('/stats')
 def count_each_obj():
