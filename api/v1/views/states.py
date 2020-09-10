@@ -24,10 +24,10 @@ def states_recovery():
         return jsonify(all_st_ls)
     if request.method == 'POST':
         if not request.is_json:
-            abort(400, description='Not a JSON')
+            return 'Not a json', 400
         json_data = request.get_json()
         if 'name' not in json_data:
-            abort(400, description='Missing name')
+            return 'Missing name', 400
         newState = State(**json_data)
         storage.new(newState)
         storage.save()
@@ -53,11 +53,11 @@ def count_each_state(state_id):
         json_data = request.get_json()
         catched = storage.get(State, state_id)
         if not request.is_json:
-            abort(400, description='Not a JSON')
+            return 'Not a json', 400
         if catched is not None:
             for k, v in json_data.items():
                 if k not in ['id', 'created_at', 'updated_at']:
                     setattr(catched, k, v)
             storage.save()
             return jsonify(catched.to_dict()), 200
-        abort(404)
+    abort(404)
