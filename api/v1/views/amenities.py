@@ -55,7 +55,8 @@ def get_amenity_id(amenity_id):
     '''
         Retrieves a Amenity object:
             GET /api/v1/amenities/<amenity_id>
-            If the amenity_id is not linked to any Amenity object, raise a 404 error
+            If the amenity_id is not linked to any Amenity object,
+            raise a 404 error
 
         Deletes a Amenity object:
             DELETE /api/v1/amenities/<amenity_id>
@@ -69,7 +70,8 @@ def get_amenity_id(amenity_id):
             raise a 404 error
             If the HTTP request body is not valid JSON,
             raise a 400 error with the message Not a JSON
-            Update the Amenity object with all key-value pairs of the dictionary
+            Update the Amenity object with all key-value
+            pairs of the dictionary
             Ignore keys: id, created_at and updated_at
             Returns the Amenity object with the status code 200
     '''
