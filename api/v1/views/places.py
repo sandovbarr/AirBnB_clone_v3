@@ -54,11 +54,12 @@ def places_of_cities(city_id):
                 abort(400, description='Missing user_id')
             if 'name' not in json_data:
                 abort(400, description='Missing name')
-            newPlace = Place(**json_data)
-            newPlace.city_id = city_id
-            storage.new(newPlace)
-            storage.save()
-            return jsonify(newPlace.to_dict()), 201
+            if storage.get(User, json_data['user_id']) is not None:
+                newPlace = Place(**json_data)
+                newPlace.city_id = city_id
+                storage.new(newPlace)
+                storage.save()
+                return jsonify(newPlace.to_dict()), 201
     abort(404)
 
 
