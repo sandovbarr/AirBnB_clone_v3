@@ -41,23 +41,24 @@ def count_each_state(state_id):
         Retrieves a State object: GET /api/v1/states/<state_id>
     '''
     s_obj = storage.get(State, state_id)
-    if request.method == 'GET':
-        if s_obj is not None:
+    if s_obj is not None:
+        if request.method == 'GET':
             return jsonify(s_obj.to_dict())
-    if request.method == 'DELETE':
-        if s_obj is not None:
+
+        if request.method == 'DELETE':
             storage.delete(s_obj)
             storage.save()
             return jsonify({}), 200
-    if request.method == 'PUT':
-        json_data = request.get_json()
-        catched = storage.get(State, state_id)
-        if not request.is_json:
-            abort(400, description='Not a JSON')
-        if catched is not None:
-            for k, v in json_data.items():
-                if k not in ['id', 'created_at', 'updated_at']:
-                    setattr(catched, k, v)
-            storage.save()
-            return jsonify(catched.to_dict()), 200
+
+        if request.method == 'PUT':
+            json_data = request.get_json()
+            catched = storage.get(State, state_id)
+            if not request.is_json:
+                abort(400, description='Not a JSON')
+            if catched is not None:
+                for k, v in json_data.items():
+                    if k not in ['id', 'created_at', 'updated_at']:
+                        setattr(catched, k, v)
+                storage.save()
+                return jsonify(catched.to_dict()), 200
     abort(404)

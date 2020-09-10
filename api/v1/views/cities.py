@@ -78,17 +78,16 @@ def get_city_by_id(city_id):
             Returns the City object with the status code 200
     '''
     city_obj = storage.get(City, city_id)
-    if request.method == 'GET':
-        if city_obj is not None:
+    if city_obj is not None:
+        if request.method == 'GET':
             return jsonify(city_obj.to_dict()), 200
 
-    if request.method == 'DELETE':
-        if city_obj is not None:
+        if request.method == 'DELETE':
             storage.delete(city_obj)
             storage.save()
             return jsonify({}), 200
-    if request.method == 'PUT':
-        if city_obj is not None:
+
+        if request.method == 'PUT':
             json_data = request.get_json()
             if not request.is_json:
                 abort(400, description='Not a JSON')
@@ -96,5 +95,5 @@ def get_city_by_id(city_id):
                 if k not in ['id', 'state_id', 'created_at', 'updated_at']:
                     setattr(city_obj, k, v)
             storage.save()
-        return jsonify(city_obj.to_dict()), 200
+            return jsonify(city_obj.to_dict()), 200
     abort(404)
