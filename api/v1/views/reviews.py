@@ -13,77 +13,91 @@ from models.user import User
 from models import storage
 
 
-@app_views.route('/states/<state_id>/cities',
+@app_views.route('/places/<place_id>/reviews',
                  methods=['GET', 'POST'], strict_slashes=False)
-def reviews(state_id):
+def reviews_of_cities(place_id):
     '''
-        Retrieves the list of all City objects of a State:
-        GET /api/v1/states/<state_id>/cities
+        Retrieves the list of all Review objects of a Place:
+            GET /api/v1/places/<place_id>/reviews
+            - If the place_id is not linked to any Place object,
+            raise a 404 error
 
-        If the state_id is not linked to any State object
-        raise a 404 error
-
-        Creates a City: POST /api/v1/states/<state_id>/cities
-        If the state_id is not linked to any State object, raise a 404 error
-        If the HTTP body request is not a valid JSON, raise a 400 error with
-        the message Not a JSON
-        If the dictionary doesn’t contain the key name, raise a 400 error with
-        the message Missing name
-        Returns the new City with the status code 201
+        Creates a Review:
+            POST /api/v1/places/<place_id>/reviews
+            - If the place_id is not linked to any Place object,
+            raise a 404 error
+            - If the HTTP body request is not valid JSON,
+            raise a 400 error with the message Not a JSON
+            - If the dictionary doesn’t contain the key user_id,
+            raise a 400 error with the message Missing user_id
+            - If the user_id is not linked to any User object,
+            raise a 404 error
+            - If the dictionary doesn’t contain the key text,
+            raise a 400 error with the message Missing text
+            Returns the new Review with the status code 201
     '''
-    state_obj = storage.get(State, state_id)
-    if request.method == 'GET':
-        if state_obj is not None:
-            cities = storage.all(City)
-            cities_list = []
-            for city in cities.values():
-                if city.state_id == state_id:
-                    cities_list.append(city.to_dict())
-            return jsonify(cities_list)
+    place_obj = storage.get(Place, place_id)
+    if place_obj is not None:
+        if request.method == 'GET':
+            reviews = storage.all(Review)
+            reviews_list = []
+            for rvw in reviews.values():
+                if rvw.place_id == place_id:
+                    reviews_list.append(rvw.to_dict())
+            return jsonify(reviews_list)
 
-    if request.method == 'POST':
-        json_data = request.get_json()
-        if not request.is_json:
-            abort(400, description='Not a JSON')
-        if 'name' not in json_data:
-            abort(400, description='Missing name')
-        if state_obj is not None:
-            newCity = City(**json_data)
-            newCity.state_id = state_id
-            storage.new(newCity)
-            storage.save()
-            return jsonify(newCity.to_dict()), 201
+        if request.method == 'POST':
+            json_data = request.get_json()
+            if not request.is_json:
+                abort(400, description='Not a JSON')
+            if 'user_id' not in json_data:
+                abort(400, description='Missing user_id')
+            if 'name' not in json_data:
+                abort(400, description='Missing name')
+            if 'text' not in json_data:
+                abort(400, description='Missing text')
+            if storage.get(User, json_data['user_id']) is not None:
+                newReview = Review(**json_data)
+                newReview.place_id = place_id
+                storage.new(newReview)
+                storage.save()
+                return jsonify(newReview.to_dict()), 201
     abort(404)
 
 
-@app_views.route('/cities/<city_id>',
+@app_views.route('reviews/<review_id>',
                  methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
-def reviews2(city_id):
+def get_reviews_by_id(review_id):
     '''
-        Retrieves a City object. : GET /api/v1/cities/<city_id>
-            If the city_id is not linked to any City object, raise a 404 error
+        Retrieves a Review object. :
+            GET /api/v1/reviews/<review_id>
+            - If the review_id is not linked to any Review object,
+            raise a 404 error
 
-        Deletes a City object: DELETE /api/v1/cities/<city_id>
-            If the city_id is not linked to any City object, raise a 404 error
+        Deletes a Review object:
+            DELETE /api/v1/reviews/<review_id>
+            - If the review_id is not linked to any Review object,
+            raise a 404 error
             Returns an empty dictionary with the status code 200
 
-        Updates a City object: PUT /api/v1/cities/<city_id>
-            If the city_id is not linked to any City object, raise a 404 error
-            You must use request.get_json from Flask to transform the HTTP body
-            request to a dictionary
-            If the HTTP request body is not valid JSON, raise a 400 error with
-            the message Not a JSON
-            Update the City object with all key-value pairs of the dictionary
-            Ignore keys: id, state_id, created_at and updated_at
-            Returns the City object with the status code 200
+        Updates a Review object:
+            PUT /api/v1/reviews/<review_id>
+            - If the review_id is not linked to any Review object,
+            raise a 404 error
+            - If the HTTP request body is not valid JSON,
+            raise a 400 error with the message Not a JSON
+            Update the Review object with all key-value
+            pairs of the dictionary
+            Ignore keys: id, user_id, place_id, created_at and updated_at
+            Returns the Review object with the status code 200
     '''
-    city_obj = storage.get(City, city_id)
-    if city_obj is not None:
+    review_obj = storage.get(Review, review_id)
+    if review_obj is not None:
         if request.method == 'GET':
-            return jsonify(city_obj.to_dict()), 200
+            return jsonify(review_obj.to_dict()), 200
 
         if request.method == 'DELETE':
-            storage.delete(city_obj)
+            storage.delete(review_obj)
             storage.save()
             return jsonify({}), 200
 
@@ -92,8 +106,12 @@ def reviews2(city_id):
             if not request.is_json:
                 abort(400, description='Not a JSON')
             for k, v in json_data.items():
-                if k not in ['id', 'state_id', 'created_at', 'updated_at']:
-                    setattr(city_obj, k, v)
+                if k not in ['id',
+                             'user_id',
+                             'place_id',
+                             'created_at',
+                             'updated_at']:
+                    setattr(review_obj, k, v)
             storage.save()
-            return jsonify(city_obj.to_dict()), 200
+            return jsonify(review_obj.to_dict()), 200
     abort(404)
