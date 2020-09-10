@@ -34,6 +34,7 @@ def users_recovery():
         for usr_obj in all_users.values():
             all_users_ls.append(usr_obj.to_dict())
         return jsonify(all_users_ls)
+
     if request.method == 'POST':
         if not request.is_json:
             abort(400, description='Not a JSON')
@@ -46,11 +47,12 @@ def users_recovery():
         storage.new(newUser)
         storage.save()
         return jsonify(newUser.to_dict()), 201
+    abort(404)
 
 
 @app_views.route('/users/<user_id>',
                  methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
-def count_each_state(user_id):
+def users_by_id(user_id):
     '''
         Retrieves a User object: GET /api/v1/users/<user_id>
             If the user_id is not linked to any User object,
