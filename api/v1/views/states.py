@@ -60,4 +60,5 @@ def count_each_state(state_id):
                     setattr(catched, k, v)
             storage.save()
             return jsonify(catched.to_dict()), 200
+        abort(404)
     abort(404)
