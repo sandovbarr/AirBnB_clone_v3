@@ -25,8 +25,10 @@ def cities_by_state(state_id):
 
         Creates a City: POST /api/v1/states/<state_id>/cities
         If the state_id is not linked to any State object, raise a 404 error
-        If the HTTP body request is not a valid JSON, raise a 400 error with the message Not a JSON
-        If the dictionary doesn’t contain the key name, raise a 400 error with the message Missing name
+        If the HTTP body request is not a valid JSON, raise a 400 error with
+        the message Not a JSON
+        If the dictionary doesn’t contain the key name, raise a 400 error with
+        the message Missing name
         Returns the new City with the status code 201
     '''
     state_obj = storage.get(State, state_id)
@@ -34,7 +36,7 @@ def cities_by_state(state_id):
         if state_obj is not None:
             cities = storage.all(City)
             cities_list = []
-            for city in cities:
+            for city in cities.values():
                 if city.state_id == state_id:
                     cities_list.append(city.to_dict())
             return jsonify(cities_list)
@@ -55,23 +57,25 @@ def cities_by_state(state_id):
 
 
 @app_views.route('/cities/<city_id>',
-                 methods=['GET', 'DELETE'], strict_slashes=False)
+                 methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
 def get_city_by_id(city_id):
     '''
         Retrieves a City object. : GET /api/v1/cities/<city_id>
-        If the city_id is not linked to any City object, raise a 404 error
+            If the city_id is not linked to any City object, raise a 404 error
 
         Deletes a City object: DELETE /api/v1/cities/<city_id>
-        If the city_id is not linked to any City object, raise a 404 error
-        Returns an empty dictionary with the status code 200
+            If the city_id is not linked to any City object, raise a 404 error
+            Returns an empty dictionary with the status code 200
 
         Updates a City object: PUT /api/v1/cities/<city_id>
-        If the city_id is not linked to any City object, raise a 404 error
-        You must use request.get_json from Flask to transform the HTTP body request to a dictionary
-        If the HTTP request body is not valid JSON, raise a 400 error with the message Not a JSON
-        Update the City object with all key-value pairs of the dictionary
-        Ignore keys: id, state_id, created_at and updated_at
-        Returns the City object with the status code 200
+            If the city_id is not linked to any City object, raise a 404 error
+            You must use request.get_json from Flask to transform the HTTP body
+            request to a dictionary
+            If the HTTP request body is not valid JSON, raise a 400 error with
+            the message Not a JSON
+            Update the City object with all key-value pairs of the dictionary
+            Ignore keys: id, state_id, created_at and updated_at
+            Returns the City object with the status code 200
     '''
     city_obj = storage.get(City, city_id)
     if request.method == 'GET':
@@ -83,4 +87,14 @@ def get_city_by_id(city_id):
             storage.delete(city_obj)
             storage.save()
             return jsonify({}), 200
+    if request.method == 'PUT':
+        if city_obj is not None:
+            json_data = request.get_json()
+            if not request.is_json:
+                abort(400, description='Not a JSON')
+            for k, v in json_data.items():
+                if k not in ['id', 'state_id', 'created_at', 'updated_at']:
+                    setattr(city_obj, k, v)
+            storage.save()
+        return jsonify(city_obj.to_dict()), 200
     abort(404)
