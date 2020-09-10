@@ -34,7 +34,8 @@ def states_recovery():
         return jsonify(newState.to_dict()), 201
 
 
-@app_views.route('/states/<state_id>', methods=['GET', 'PUT', 'DELETE'])
+@app_views.route('/states/<state_id>',
+                 methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
 def count_each_state(state_id):
     '''
         Retrieves a State object: GET /api/v1/states/<state_id>
@@ -48,19 +49,15 @@ def count_each_state(state_id):
             storage.delete(s_obj)
             storage.save()
             return jsonify({}), 200
-    abort(404)
-
-
-# Creates a State: POST /api/v1/states
-# You must use request.get_json from Flask to transform the HTTP body request to a dictionary
-# If the HTTP body request is not valid JSON, raise a 400 error with the message Not a JSON
-# If the dictionary doesn’t contain the key name, raise a 400 error with the message Missing name
-# Returns the new State with the status code 201
-
-# Updates a State object: PUT /api/v1/states/<state_id>
-# If the state_id is not linked to any State object, raise a 404 error
-# You must use request.get_json from Flask to transform the HTTP body request to a dictionary
-# If the HTTP body request is not valid JSON, raise a 400 error with the message Not a JSON
-# Update the State object with all key-value pairs of the dictionary.
-# Ignore keys: id, created_at and updated_at
-# Returns the State object with the status code 200
+    if request.method == 'PUT':
+        json_data = request.get_json()
+        catched = storage.get(State, state_id)
+        if not request.is_json:
+            abort(400, description='Not a JSON')
+        if catched is not None:
+            for k, v in json_data.items():
+                if k not in ['id', 'created_at', 'updated_at']:
+                    setattr(catched, k, v)
+            storage.save()
+            return jsonify(catched.to_dict()), 200
+        abort(404)
