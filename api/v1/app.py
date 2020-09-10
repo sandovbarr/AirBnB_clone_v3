@@ -9,6 +9,8 @@ from api.v1.views.states import *
 from api.v1.views.cities import *
 from api.v1.views.amenities import *
 from api.v1.views.users import *
+from api.v1.views.places import *
+from api.v1.views.reviews import *
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
