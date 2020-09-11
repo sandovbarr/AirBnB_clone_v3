@@ -8,6 +8,8 @@ The console is the first segment of the AirBnB project at Holberton School that 
 * Update attributes of an object
 * Destroy an object
 
+#### NEW UPDATES
+* Flask API Rest implementation for URL REQUESTS
 ## Table of Content
 * [Environment](#environment)
 * [Installation](#installation)
@@ -20,6 +22,8 @@ The console is the first segment of the AirBnB project at Holberton School that 
 
 ## Environment
 This project is interpreted/tested on Ubuntu 14.04 LTS using python3 (version 3.4.3)
+
+Flask, SQLALchemy, Flask_cors required for running RestAPI functionalities
 
 ## Installation
 * Clone this repository: `git clone "https://github.com/alexaorrico/AirBnB_clone.git"`
@@ -37,7 +41,8 @@ List of commands this console current supports:
 * `destroy` - Deletes an instance based on the class name and id (save the change into the JSON file). 
 * `show` - Prints the string representation of an instance based on the class name and id.
 * `all` - Prints all string representation of all instances based or not on the class name. 
-* `update` - Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). 
+* `update` - Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file).
+ 
 
 #### `models/` directory contains classes used for this project:
 [base_model.py](/models/base_model.py) - The BaseModel class from which future classes will be derived
@@ -156,7 +161,8 @@ No known bugs at this time.
 ## Authors
 Alexa Orrico - [Github](https://github.com/alexaorrico) / [Twitter](https://twitter.com/alexa_orrico)  
 Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://twitter.com/earthtojhuang)
+Jairo Sandoval - [Github](https://github.com/sandovbarr) / [Twitter](https://twitter.com/elhumanimal)  
+Diego Romero - [Github](https://github.com/loopingdiego) / [Twitter](https://twitter.com/LoopingDiego)
 
-Second part of Airbnb: Joann Vuong
 ## License
 Public Domain. No copy write protection. 
