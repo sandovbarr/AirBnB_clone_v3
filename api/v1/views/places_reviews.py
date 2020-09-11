@@ -65,7 +65,7 @@ def reviews_of_cities(place_id):
     abort(404)
 
 
-@app_views.route('reviews/<review_id>',
+@app_views.route('/reviews/<review_id>',
                  methods=['GET', 'DELETE', 'PUT'], strict_slashes=False)
 def get_reviews_by_id(review_id):
     '''
