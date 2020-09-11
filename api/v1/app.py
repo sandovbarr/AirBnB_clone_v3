@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Flask App runner """
 from flask import Flask, Blueprint, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from models import storage
 # from api.v1.views import app_views
 from os import getenv
@@ -23,6 +23,7 @@ app.config['CORS_HEADERS'] = '< Access-Control-Allow-Origin: 0.0.0.0'
 
 
 @app.route("/*")
+@cross_origin(origins="http://0.0.0.0")
 def cross_function():
     pass
 
