@@ -52,8 +52,6 @@ def reviews_of_cities(place_id):
                 abort(400, description='Not a JSON')
             if 'user_id' not in json_data:
                 abort(400, description='Missing user_id')
-            if 'name' not in json_data:
-                abort(400, description='Missing name')
             if 'text' not in json_data:
                 abort(400, description='Missing text')
             if storage.get(User, json_data['user_id']) is not None:
