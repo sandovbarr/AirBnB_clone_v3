@@ -44,7 +44,7 @@ def reviews_of_cities(place_id):
             for rvw in reviews.values():
                 if rvw.place_id == place_id:
                     reviews_list.append(rvw.to_dict())
-            return jsonify(reviews_list)
+            return jsonify(reviews_list), 200
 
         if request.method == 'POST':
             json_data = request.get_json()
