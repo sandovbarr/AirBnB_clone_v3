@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Flask App runner """
 from flask import Flask, Blueprint, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from models import storage
 # from api.v1.views import app_views
 from os import getenv
@@ -18,14 +18,7 @@ app.register_blueprint(app_views)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 PORT = getenv('HBNB_API_PORT') if getenv('HBNB_API_PORT') else 5000
 HOST = getenv('HBNB_API_HOST') if getenv('HBNB_API_HOST') else "0.0.0.0"
-cors = CORS(app)
-app.config['CORS_HEADERS'] = '< Access-Control-Allow-Origin: 0.0.0.0'
-
-
-@app.route("/*")
-@cross_origin(origins="http://0.0.0.0")
-def cross_function():
-    pass
+cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
